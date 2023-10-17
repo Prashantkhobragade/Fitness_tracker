@@ -39,4 +39,11 @@ for s in df['set'].unique():
     duration = stop - start
     df.loc[(df['set']==s), "duration"] = duration.seconds
     
-df.groupby(['category'])['duration'].mean()
+duration_df = df.groupby(['category'])['duration'].mean()
+
+#for heavy sets
+duration_df.iloc[0]/5  
+
+#for medium set
+duration_df.iloc[1]/10
+
