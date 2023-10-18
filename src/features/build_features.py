@@ -47,3 +47,59 @@ duration_df.iloc[0]/5
 #for medium set
 duration_df.iloc[1]/10
 
+#Butterworth low-pass filter
+
+df_lowpass = df.copy()
+LowPass = LowPassFilter()
+
+fs = 1000/200
+cutoff = 1.3
+
+df_lowpass = LowPass.low_pass_filter(df_lowpass, "acc_y", fs, cutoff, order=5)
+
+subset = df_lowpass[df_lowpass['set']==45]
+print(subset['label'][0])
+
+fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(20,10))
+ax[0].plot(subset["acc_y"].reset_index(drop=True), label="raw data")
+ax[1].plot(subset["acc_y_lowpass"].reset_index(drop=True), label="Butterworth filter")
+ax[0].legend(loc="upper center", bbox_to_anchor = (0.5, 1.15), fancybox=True, shadow=True)
+ax[1].legend(loc="upper center", bbox_to_anchor = (0.5, 1.15), fancybox=True, shadow=True)
+
+
+for col in predictor_columns:
+    df_lowpass = LowPass.low_pass_filter(df_lowpass, col, fs, cutoff, order=5)
+    df_lowpass[col] = df_lowpass[col + "_lowpass"]
+    del df_lowpass[col + "_lowpass"]
+    
+
+
+## Principal Component Analysis
+
+df_pca = df_lowpass.copy()
+
+PCA =PrincipalComponentAnalysis()
+
+pc_values = PCA.determine_pc_explained_variance(df_pca, predictor_columns)
+
+#using Elbow Method 
+plt.figure(figsize=(10,10))
+plt.plot(range(1, len(predictor_columns) + 1), pc_values)
+plt.xlabel("principal component number")
+plt.ylabel("explained variable")
+plt.show()
+
+df_pca = PCA.apply_pca(df_pca, predictor_columns, 3)
+
+
+## Sum Of Squred Attribute
+
+df_squred = df_pca.copy()
+
+acc_r = df_squred['acc_x'] ** 2 + df_squred['acc_y'] ** 2 +df_squred['acc_z'] ** 2
+gyr_r = df_squred['gyr_x'] ** 2 + df_squred['gyr_y'] ** 2 +df_squred['gyr_z'] ** 2
+
+df_squred['acc_r'] = np.sqrt(acc_r)
+df_squred['gyr_r'] = np.sqrt(gyr_r)
+
+
