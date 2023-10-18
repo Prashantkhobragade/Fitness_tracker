@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from DataTransformation import LowPassFilter, PrincipalComponentAnalysis
 from TemporalAbstraction import NumericalAbstraction
-
+from FrequencyAbstraction import FourierTransformation
+from sklearn.cluster import KMeans
 
 #read data
 
@@ -103,3 +104,73 @@ df_squred['acc_r'] = np.sqrt(acc_r)
 df_squred['gyr_r'] = np.sqrt(gyr_r)
 
 
+## Temporal Abstraction
+
+df_temporal = df_squred.copy()
+NumAbs = NumericalAbstraction()
+
+predictor_columns = predictor_columns + ["acc_r", "gyr_r"]
+
+ws = int(1000 / 200)
+
+for col in predictor_columns:
+    df_temporal = NumAbs.abstract_numerical(df_temporal, [col], ws, "mean")
+    df_temporal = NumAbs.abstract_numerical(df_temporal, [col], ws, "std")
+
+df_temporal_list = []
+for s in df_temporal['set'].unique():
+    subset = df_temporal[df_temporal['set'] == s].copy()
+    for col in predictor_columns:
+        subset = NumAbs.abstract_numerical(subset, [col], ws, "mean")
+        subset = NumAbs.abstract_numerical(subset, [col], ws, "std")
+    df_temporal_list.append(subset)
+    
+df_temporal = pd.concat(df_temporal_list)
+
+df_temporal.info()
+df_temporal.isnull().sum()
+
+
+## Frequency Features
+
+df_freq = df_temporal.copy().reset_index()
+FreqAbs = FourierTransformation()
+
+fs = int(1000/200)
+ws = int(2800/200)
+
+df_freq = FreqAbs.abstract_frequency(df_freq, ['acc_y'], ws, fs)
+
+#visualize result
+
+subset = df_freq[df_freq['set']== 15]
+subset[["acc_y"]].plot()
+subset[
+    [
+        "acc_y_max_freq",
+        "acc_y_freq_weighted",
+        "acc_y_pse",
+        "acc_y_freq_1.429_Hz_ws_14",
+        "acc_y_freq_2.5_Hz_ws_14"
+    ]
+].plot()
+
+df_freq_list = []
+for s in df_freq['set'].unique():
+    print(f"Applying Fourier Transformation to set {s}")
+    subset = df_freq[df_freq['set'] == s].reset_index(drop=True).copy()
+    subset = FreqAbs.abstract_frequency(subset, predictor_columns , ws, fs)
+    df_freq_list.append(subset)
+    
+df_freq = pd.concat(df_freq_list).set_index("epoch (ms)", drop=True)
+
+df_freq.columns
+
+## Dealing with overlapping windows
+
+df_freq = df_freq.dropna()
+df_freq = df_freq.iloc[::2]
+
+df_freq = df_freq.drop(['duration'], axis=1)
+
+## Clustering
