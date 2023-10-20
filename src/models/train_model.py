@@ -8,6 +8,8 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 
 from LearningAlgorithms import ClassificationAlgorithms
 
+import joblib
+
 #plot settings
 plt.style.use("fivethirtyeight")
 plt.rcParams['figure.figsize'] = (20,5)
@@ -75,10 +77,10 @@ selected_features = ['pca_1',
  'acc_x_freq_0.0_Hz_ws_14',
  'acc_z_freq_0.0_Hz_ws_14',
  'acc_r_freq_0.357_Hz_ws_14',
- 'acc_x_freq_0.357_Hz_ws_14',
- 'gyr_r_max_freq',
- 'gyr_x_freq_0.714_Hz_ws_14',
- 'gyr_z_max_freq',
+ 'acc_r',
+ 'acc_x_max_freq',
+ 'acc_x',
+ 'acc_z_freq_weighted',
  'acc_y_max_freq']
 
 
@@ -378,3 +380,11 @@ plt.show()
 """
 with Selected_feature , Accuracy Is Good 98.606 % but Model IS Confused Between dead and row.
 """
+#Export the model
+#joblib.dump(value = [learner,feature_set_4], filename = "../../models/trained_model_FF_NN.pkl")
+
+best_model = learner.feedforward_neural_network(
+    X_train[feature_set_4], y_train, X_test[feature_set_4], gridsearch=False
+)
+
+joblib.dump(best_model, filename="../../models/trained_model_FFNN.pkl")
