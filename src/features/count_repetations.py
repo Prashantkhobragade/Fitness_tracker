@@ -14,6 +14,7 @@ plt.rcParams["figure.figsize"] = (20,5)
 plt.rcParams["figure.dpi"] = 100
 plt.rcParams["lines.linewidth"] = 2
 
+#--------------------------------------------------------------------------------------------------------------------
 #load data
 
 df = pd.read_pickle("../../data/interim/01_data_processed.pkl")
@@ -42,6 +43,7 @@ plot_df[plot_df['set']==plot_df['set'].unique()[0]]["acc_y"].plot()
 plot_df[plot_df['set']==plot_df['set'].unique()[0]]["acc_z"].plot()
 plot_df[plot_df['set']==plot_df['set'].unique()[0]]["acc_r"].plot()
 
+#-----------------------------------------------------------------------------------------------------------
 # Configure LowPass Filter
 
 fs = int(1000 / 200)
@@ -135,7 +137,7 @@ for s in df['set'].unique():
     
 rep_df
 
-
+#----------------------------------------------------------------------------------------------------------------
 #calculating error
 
 error = mean_absolute_error(rep_df["reps"], rep_df["reps_pred"]).round(2)

@@ -16,6 +16,9 @@ plt.rcParams['figure.figsize'] = (20,5)
 plt.rcParams["figure.dpi"] = 100
 plt.rcParams["lines.linewidth"] = 2
 
+
+#--------------------------------------------------------------------------------------------------------------------
+
 #load the data
 
 df = pd.read_pickle("../../data/interim/03_data_features.pkl")
@@ -40,6 +43,7 @@ y_test.value_counts().plot(kind="bar", ax=ax, color="royalblue", label='Test')
 plt.legend()
 plt.show()
 
+#--------------------------------------------------------------------------------------------------------------------------
 
 #split feature subset
 
@@ -61,6 +65,10 @@ feature_set_1 = list(set(basic_features))
 feature_set_2 = list(set(basic_features + square_features + pca_features))
 feature_set_3 = list(set(feature_set_2 + time_features))
 feature_set_4 = list(set(feature_set_3 + freq_features + cluster_features))
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
 
 # Perfrom forward feature selection using simple Decision Tree
 
@@ -212,6 +220,8 @@ plt.ylim(0.7, 1)
 plt.legend(loc="lower right")
 plt.show()
 
+
+#----------------------------------------------------------------------------------------------------------------------------------
 # Select Best model(NN with Feature Set 4) and evaluate result
 
 (
@@ -258,6 +268,8 @@ plt.xlabel("Predicted label")
 plt.grid(False)
 plt.show()
 
+
+#-------------------------------------------------------------------------------------------------------------------------
 
 #validating our model 
 """
@@ -332,6 +344,7 @@ plt.xlabel("Predicted label")
 plt.grid(False)
 plt.show()
 
+#---------------------------------------------------------------------------------------------------------------------------
 
 #lets try NN model with Selected_Features
 (

@@ -6,6 +6,7 @@ from TemporalAbstraction import NumericalAbstraction
 from FrequencyAbstraction import FourierTransformation
 from sklearn.cluster import KMeans
 
+#----------------------------------------------------------------------------------------------------
 #read data
 
 df = pd.read_pickle("../../data/interim/02_outlier_removed_chauvenet.pkl")
@@ -28,6 +29,8 @@ for col in predictor_columns:
 
 df.isnull().sum()
 
+#---------------------------------------------------------------------------------------------------------------------
+
 #calculating the Avg duration of set
 
 df[df['set']==25]['acc_y'].plot()
@@ -48,6 +51,8 @@ duration_df.iloc[0]/5
 #for medium set
 duration_df.iloc[1]/10
 
+
+#-------------------------------------------------------------------------------------------------------------------
 #Butterworth low-pass filter
 
 df_lowpass = df.copy()
@@ -74,6 +79,7 @@ for col in predictor_columns:
     del df_lowpass[col + "_lowpass"]
     
 
+#-------------------------------------------------------------------------------------------------------------------------
 
 ## Principal Component Analysis
 
@@ -93,6 +99,8 @@ plt.show()
 df_pca = PCA.apply_pca(df_pca, predictor_columns, 3)
 
 
+#---------------------------------------------------------------------------------------------------------------------------
+
 ## Sum Of Squred Attribute
 
 df_squred = df_pca.copy()
@@ -103,6 +111,8 @@ gyr_r = df_squred['gyr_x'] ** 2 + df_squred['gyr_y'] ** 2 +df_squred['gyr_z'] **
 df_squred['acc_r'] = np.sqrt(acc_r)
 df_squred['gyr_r'] = np.sqrt(gyr_r)
 
+
+#----------------------------------------------------------------------------------------------------------------------------
 
 ## Temporal Abstraction
 
@@ -130,6 +140,7 @@ df_temporal = pd.concat(df_temporal_list)
 df_temporal.info()
 df_temporal.isnull().sum()
 
+#-----------------------------------------------------------------------------------------------------------------------
 
 ## Frequency Features
 
@@ -172,6 +183,9 @@ df_freq = df_freq.dropna()
 df_freq = df_freq.iloc[::2]
 
 df_freq = df_freq.drop(['duration'], axis=1)
+
+
+#--------------------------------------------------------------------------------------------------------------------
 
 ## Clustering
 
