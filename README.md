@@ -1,5 +1,8 @@
 ## Fitness_tracker
 
+
+[Fitness Tracker](https://github.com/Prashantkhobragade/Fitness_tracker/blob/main/docs/barbell_ex.png)
+
 ## Project Overview
 
 The Fitness Tracker App is a Python-based project focusing on the implementation of machine learning to create a fitness tracker. The project's primary objective is to process and analyze sensor data for the classification of barbell exercises like Squat, Bench Press, OHP, Dead Lift, ROW, and the counting of repetitions.
